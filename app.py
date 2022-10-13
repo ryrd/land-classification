@@ -1,58 +1,73 @@
 # python detect.py --weights klasifikasi-lahan-yolo5.pt --conf 0.25 --source image_sample/land.JPG
 
 # load libraries 
-# import platform
-# import sys
-# from pathlib import Path
-# import argparse
-# import torch
 import os
 import tempfile
-
-# from models.common import DetectMultiBackend
-# from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
-# from utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-#                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
-# from utils.plots import Annotator, colors, save_one_box
-# from utils.torch_utils import select_device, smart_inference_mode
-
 from PIL import Image
 import streamlit as st
 
+# import yolov5 detect function
 from detect import run
 
-WEIGHT = 'klasifikasi-lahan-yolo5.pt'
-
 def main():
+    st.set_page_config(
+        page_title="land classification - YOLOv5",
+    )
     st.title("LAND CLASSIFICATION - YOLOv5")
+
+    # put model into constant
+    WEIGHT = 'klasifikasi-lahan-yolo5.pt'
+
+    # temp file location
+    tempfile.tempdir = "/temp"
+    print(tempfile.gettempdir())
 
     # st.checkbox('use GPU')
 
     form = st.form("file_input")
-    form_file = form.file_uploader('import file', type=['jpg','jpeg','mp4'])
-    form.form_submit_button("Detect")
+    form_file = form.file_uploader('import file', type=['jpg','jpeg','mp4'], accept_multiple_files=True)
+    preview_btn = form.form_submit_button("preview")
 
-    tfflie = tempfile.NamedTemporaryFile(suffix='.mp4', delete=False)
+    detect_btn = st.button('detect')
 
-    if form_file is not None:
-        # print(form_file)
-        if form_file.type == 'image/jpeg':
-            image_file = Image.open(form_file)
-            form.image(image_file, width=200)
-            run(weights=WEIGHT, source='./image_sample/land2.jpg')
-        elif form_file.type == 'video/mp4':
-            tfflie.write(form_file.read())
-            video_file = open(tfflie.name, 'rb')
-            video_bytes = video_file.read()
+    if preview_btn:
+        if form_file is not None:
+            for f in form_file:
+                if f.type == 'image/jpeg':
+                    image_file = Image.open(f)
+                    form.image(image_file, width=200)
 
-            form.video(video_bytes)
+                elif f.type == 'video/mp4':
+                    video_temp.write(f.read())
+                    video_file = open(video_temp.name, 'rb')
+                    video_bytes = video_file.read()
+                    form.video(video_bytes)
 
-    if form_file:
-        st.write('uploaded')
-    else:
-        st.write('not uploaded')
+    if detect_btn:
+        if form_file is not None:
+            for f in form_file:
+                if f.type == 'image/jpeg':
+                    image_file = Image.open(f)
+                    form.image(image_file, width=200)
+
+                    print('--------------ngaran:',f)
+
+                    photo_temp = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
+
+                    photo_temp.write(f.read())
+                    tp_file = open(photo_temp.name, 'rb')
+                    run(weights=WEIGHT, source='./image_sample/land.jpg')
+                    
+                elif f.type == 'video/mp4':
+                    video_temp = tempfile.NamedTemporaryFile(suffix='.mp4', delete=False)
+                    video_temp.write(f.read())
+                    video_file = open(video_temp.name, 'rb')
+                    video_bytes = video_file.read()
+                    form.video(video_bytes)
 
 
+
+# -----------main function-------------
 if __name__ == '__main__':
     try:
         main()
