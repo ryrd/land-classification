@@ -16,6 +16,7 @@ def main():
     delete_cache = st.button('delete cache files')
     if delete_cache:
         pass
+        # pathlib.Path("./temp").unlink()
         # os.remove(os.path.join("./temp"))
 
     # put model into constant
