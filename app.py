@@ -57,6 +57,10 @@ def main():
                     form.image(f"./temp/{temp_name}", width=200)
                     run(weights=WEIGHT, source=f"./temp/{temp_name}")
                     st.image(f"./detect/exp/{temp_name}")
+
+                    with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
+                        st.download_button(label="download detected file", data=detected_file, file_name="detected.jpg", mime="image/jpg")
+
                     
                 elif f.type == 'video/mp4':
                     pass
@@ -64,13 +68,16 @@ def main():
                     video_temp.write(f.read())
                     video_file = open(video_temp.name, 'rb')
                     video_bytes = video_file.read()
+                    temp_name = video_file.name.split("\\")[-1]
+                    form.video(f"./temp/{temp_name}")
                     
-                    print('=====video byte:', video_bytes)
-                    temp_name = video_bytes.split("\\")[-1]
-                    print('=====video byte:', temp_name)
-                    # run(weights=WEIGHT, source=f"./temp/{temp_name}")
+                    run(weights=WEIGHT, source=f"./temp/{temp_name}")
 
+                    st.video(f"./detect/exp/{temp_name}")
 
+                    with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
+                        st.download_button(label="download detected file", data=detected_file, file_name="detected.mp4", mime="video/mp4")
+                    
 
 # -----------main function-------------
 if __name__ == '__main__':
