@@ -35,9 +35,8 @@ def main():
                     photo_temp = tempfile.NamedTemporaryFile(suffix='.jpg',dir='./temp', delete=False)
                     photo_temp.write(f.read())
                     tp_file = open(photo_temp.name, 'rb')
-
-                    print('========',tp_file.name)
-                    form.image(tp_file.name, width=200)
+                    temp_name = tp_file.name.split("\\")[-1]
+                    form.image(f"./temp/{temp_name}", width=200)
 
                 elif f.type == 'video/mp4':
                     video_temp = tempfile.NamedTemporaryFile(suffix='.mp4',dir='./temp', delete=False)
@@ -50,25 +49,26 @@ def main():
         if form_file is not None:
             for f in form_file:
                 if f.type == 'image/jpeg':
-                    pass
-                    # image_file = Image.open(f)
-                    # form.image(image_file, width=200)
+                    photo_temp = tempfile.NamedTemporaryFile(suffix='.jpg',dir='./temp', delete=False)
+                    photo_temp.write(f.read())
+                    tp_file = open(photo_temp.name, 'rb')
 
-                    # photo_temp = tempfile.NamedTemporaryFile(suffix='.jpg',dir='./temp')
-
-                    # photo_temp.write(f.read())
-                    # tp_file = open(photo_temp.name, 'rb')
-                    # run(weights=WEIGHT, source=tp_file)
+                    temp_name = tp_file.name.split("\\")[-1]
+                    form.image(f"./temp/{temp_name}", width=200)
+                    run(weights=WEIGHT, source=f"./temp/{temp_name}")
+                    st.image(f"./detect/exp/{temp_name}")
                     
                 elif f.type == 'video/mp4':
                     pass
-                    # video_temp = tempfile.NamedTemporaryFile(suffix='.mp4',dir='./temp', delete=False)
-                    # video_temp.write(f.read())
-                    # video_file = open(video_temp.name, 'rb')
-                    # video_bytes = video_file.read()
-                    # form.video(video_bytes)
-
-                    # run(weights=WEIGHT, source=video_file)
+                    video_temp = tempfile.NamedTemporaryFile(suffix='.mp4',dir='./temp', delete=False)
+                    video_temp.write(f.read())
+                    video_file = open(video_temp.name, 'rb')
+                    video_bytes = video_file.read()
+                    
+                    print('=====video byte:', video_bytes)
+                    temp_name = video_bytes.split("\\")[-1]
+                    print('=====video byte:', temp_name)
+                    # run(weights=WEIGHT, source=f"./temp/{temp_name}")
 
 
 
