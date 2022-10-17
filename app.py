@@ -3,6 +3,8 @@
 # load libraries 
 import os
 import tempfile
+# import pathlib
+import glob
 from PIL import Image
 import streamlit as st
 
@@ -15,9 +17,12 @@ def main():
 
     delete_cache = st.button('delete cache files')
     if delete_cache:
-        pass
-        # pathlib.Path("./temp").unlink()
-        # os.remove(os.path.join("./temp"))
+        temp_files = glob.glob('./temp/*')
+        for f in temp_files:
+            os.remove(f)
+        detected_files = glob.glob('./detect/exp/*')
+        for f in detected_files:
+            os.remove(f)
 
     # put model into constant
     WEIGHT = 'klasifikasi-lahan-yolo5.pt'
