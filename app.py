@@ -1,7 +1,6 @@
 # python detect.py --weights klasifikasi-lahan-yolo5.pt --conf 0.25 --source image_sample/land.JPG
 # load libraries 
 import os
-import os.path
 import tempfile
 import glob
 import streamlit as st
