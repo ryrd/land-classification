@@ -1,9 +1,9 @@
 # python detect.py --weights klasifikasi-lahan-yolo5.pt --conf 0.25 --source image_sample/land.JPG
 # load libraries 
 import os
+import os.path
 import tempfile
 import glob
-from PIL import Image
 import streamlit as st
 
 # import yolov5 detect function
@@ -22,7 +22,7 @@ def main():
         for f in detected_files:
             os.remove(f)
 
-    # put model into constant
+    # reference model as constant variable
     WEIGHT = 'klasifikasi-lahan-yolo5.pt'
 
     form = st.form("file_input")
@@ -55,16 +55,15 @@ def main():
                     photo_temp = tempfile.NamedTemporaryFile(suffix='.jpg',dir='./temp', delete=False)
                     photo_temp.write(f.read())
                     tp_file = open(photo_temp.name, 'rb')
-
                     temp_name = tp_file.name.split("\\")[-1]
                     form.image(f"./temp/{temp_name}", width=200)
+                    
                     run(weights=WEIGHT, source=f"./temp/{temp_name}")
                     st.image(f"./detect/exp/{temp_name}")
 
                     with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
                         st.download_button(label="download detected file", data=detected_file, file_name="detected.jpg", mime="image/jpg")
-
-                    
+      
                 elif f.type == 'video/mp4':
                     video_temp = tempfile.NamedTemporaryFile(suffix='.mp4',dir='./temp', delete=False)
                     video_temp.write(f.read())
@@ -74,12 +73,12 @@ def main():
                     form.video(f"./temp/{temp_name}")
                     
                     run(weights=WEIGHT, source=f"./temp/{temp_name}")
-
-                    with open(f"./detect/exp/{temp_name}", "rb") as detected_video:
-                        st.video(detected_video)
-
+                    
+                    st.video(f"./detect/exp/{temp_name}")
+                    
+                    col1, col2, col3 = st.columns(3)
                     with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
-                        st.download_button(label="download detected file", data=detected_file, file_name="detected.mp4", mime="video/mp4")
+                        col2.download_button(label="download detected file", data=detected_file, file_name="detected.mp4", mime="video/mp4")
                     
 
 # -----------main function-------------
