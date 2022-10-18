@@ -66,7 +66,6 @@ def main():
 
                     
                 elif f.type == 'video/mp4':
-                    pass
                     video_temp = tempfile.NamedTemporaryFile(suffix='.mp4',dir='./temp', delete=False)
                     video_temp.write(f.read())
                     video_file = open(video_temp.name, 'rb')
