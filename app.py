@@ -75,7 +75,8 @@ def main():
                     
                     run(weights=WEIGHT, source=f"./temp/{temp_name}")
 
-                    st.video(f"./detect/exp/{temp_name}")
+                    with open(f"./detect/exp/{temp_name}", "rb") as detected_video:
+                        st.video(detected_video)
 
                     with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
                         st.download_button(label="download detected file", data=detected_file, file_name="detected.mp4", mime="video/mp4")
