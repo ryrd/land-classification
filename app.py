@@ -8,18 +8,21 @@ import streamlit as st
 # import yolov5 detect function
 from detect import run
 
+def delete_caches():
+    temp_files = glob.glob('./temp/*')
+    for f in temp_files:
+        os.remove(f)
+    detected_files = glob.glob('./detect/exp/*')
+    for f in detected_files:
+        os.remove(f)
+
 def main():
     st.set_page_config(page_title="land classification - YOLOv5")
     st.title("LAND CLASSIFICATION - YOLOv5")
 
     delete_cache = st.button('delete cache files')
     if delete_cache:
-        temp_files = glob.glob('./temp/*')
-        for f in temp_files:
-            os.remove(f)
-        detected_files = glob.glob('./detect/exp/*')
-        for f in detected_files:
-            os.remove(f)
+        delete_caches()
 
     # reference model as constant variable
     WEIGHT = 'klasifikasi-lahan-yolo5.pt'
@@ -32,6 +35,8 @@ def main():
 
     if preview_btn:
         if form_file is not None:
+            delete_caches()
+
             for f in form_file:
                 if f.type == 'image/jpeg':
                     photo_temp = tempfile.NamedTemporaryFile(suffix='.jpg',dir='./temp', delete=False)
@@ -49,6 +54,8 @@ def main():
 
     if detect_btn:
         if form_file is not None:
+            delete_caches()
+            
             for f in form_file:
                 if f.type == 'image/jpeg':
                     photo_temp = tempfile.NamedTemporaryFile(suffix='.jpg',dir='./temp', delete=False)
