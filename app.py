@@ -9,10 +9,10 @@ import streamlit as st
 from detect import run
 
 def delete_caches():
-    temp_files = glob.glob('./temp/*')
+    temp_files = glob.glob('./temp/[!README]*')
     for f in temp_files:
         os.remove(f)
-    detected_files = glob.glob('./detect/exp/*')
+    detected_files = glob.glob('./detect/exp/[!README]*')
     for f in detected_files:
         os.remove(f)
 
@@ -67,7 +67,7 @@ def main():
                     st.image(f"./detect/exp/{temp_name}")
 
                     with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
-                        st.download_button(label="download detected file", data=detected_file, file_name="detected.jpg", mime="image/jpg")
+                        st.download_button(label="download detected file", data=detected_file, file_name=f"{temp_name}", mime="image/jpg")
       
                 elif f.type == 'video/mp4':
                     video_temp = tempfile.NamedTemporaryFile(suffix='.mp4',dir='./temp', delete=False)
@@ -83,7 +83,7 @@ def main():
                     
                     col1, col2, col3 = st.columns(3)
                     with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
-                        col2.download_button(label="download detected file", data=detected_file, file_name="detected.mp4", mime="video/mp4")
+                        col2.download_button(label="download detected file", data=detected_file, file_name=f"{temp_name}", mime="video/mp4")
                     
 
 # -----------main function-------------
