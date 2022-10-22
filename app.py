@@ -30,7 +30,6 @@ def main():
     form = st.form("file_input")
     form_file = form.file_uploader('import file', type=['jpg','jpeg','mp4'], accept_multiple_files=True)
     preview_btn = form.form_submit_button("preview")
-
     detect_btn = st.button('detect')
 
     if preview_btn:
