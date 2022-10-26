@@ -17,6 +17,7 @@ def delete_caches():
     detected_files = glob.glob('./detect/exp/[!README]*')
     for f in detected_files:
         os.remove(f)
+    os.remove('./detected-files.zip')
 
 def main():
     st.set_page_config(page_title="land classification - YOLOv5")
