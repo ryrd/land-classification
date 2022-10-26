@@ -3,6 +3,8 @@
 import os
 import tempfile
 import glob
+import zipfile
+import pathlib
 import streamlit as st
 
 # import yolov5 detect function
@@ -26,6 +28,8 @@ def main():
 
     # reference model as constant variable
     WEIGHT = 'klasifikasi-lahan-yolo5.pt'
+
+    zip_dir = pathlib.Path("./detect/")
 
     form = st.form("file_input")
     form_file = form.file_uploader('import file', type=['jpg','jpeg','mp4'], accept_multiple_files=True)
@@ -65,9 +69,6 @@ def main():
                     
                     run(weights=WEIGHT, source=f"./temp/{temp_name}")
                     st.image(f"./detect/exp/{temp_name}")
-
-                    with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
-                        st.download_button(label="download detected file", data=detected_file, file_name=f"{temp_name}", mime="image/jpg")
       
                 elif f.type == 'video/mp4':
                     video_temp = tempfile.NamedTemporaryFile(suffix='.mp4',dir='./temp', delete=False)
@@ -78,13 +79,30 @@ def main():
                     form.video(f"./temp/{temp_name}")
                     
                     run(weights=WEIGHT, source=f"./temp/{temp_name}")
-                    
                     st.video(f"./detect/exp/{temp_name}")
-                    
                     col1, col2, col3 = st.columns(3)
-                    with open(f"./detect/exp/{temp_name}", "rb") as detected_file:
-                        col2.download_button(label="download detected file", data=detected_file, file_name=f"{temp_name}", mime="video/mp4")
-                    
+
+
+            detected_to_download = glob.glob('./detect/exp/[!README]*')
+            if len(detected_to_download) > 1:
+                with zipfile.ZipFile('detected-files.zip', 'w') as zipF:
+                    for f in detected_to_download:
+                        zipF.write(f, compress_type=zipfile.ZIP_DEFLATED)
+
+                st.download_button(label='download detected zip files', data='./detected-files.zip', file_name="detected-files.zip", mime="application/zip")
+
+            else:
+                to_download = detected_to_download[0].split("\\")[-1]
+                extension = to_download.split(".")[-1]
+                if extension == 'jpg':
+                    with open(f"./detect/exp/{to_download}", "rb") as download_photo:
+                        st.download_button(label="download detected photo", data=download_photo, file_name=f"{temp_name}", mime="image/jpg")
+                elif extension == 'mp4':
+                    with open(f"./detect/exp/{to_download}", "rb") as detected_video:
+                        col2.download_button(label="download detected video", data=detected_video, file_name=f"{temp_name}", mime="video/mp4")
+
+
+
 
 # -----------main function-------------
 if __name__ == '__main__':
