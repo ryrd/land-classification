@@ -91,7 +91,7 @@ def main():
 
             # select detected video
             detected_to_download = glob.glob('./detect/exp/[!README]*')
-            print(detected_to_download)
+            
             # if more than single file to detect save as zip
             if len(detected_to_download) > 1:
                 # save to zip
